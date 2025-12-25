@@ -51,8 +51,9 @@ void main() {
   
   // Displacement
   vec3 pos = position;
-  float n = cnoise(vec2(uv.x * 4.0 - uTime * 0.2, uv.y * 3.0 + uTime * 0.2));
-  float displacement = n * 0.6; // Increased amplitude for more "breath"
+  // Slower, more fluid noise movement
+  float n = cnoise(vec2(uv.x * 3.0 - uTime * 0.15, uv.y * 2.0 + uTime * 0.1));
+  float displacement = n * 0.8; // Increased amplitude for more "breath"
   
   // Displace along normal
   pos += normal * displacement;
@@ -112,25 +113,25 @@ void main() {
   // Flowing texture effect
   float n = cnoise(vec2(vUv.x * 6.0 - uTime * 0.4, vUv.y * 2.0 + uTime * 0.1));
   
-  // Create ethereal strands
-  float intensity = smoothstep(0.0, 0.6, n);
+  // Create ethereal strands - softer threshold
+  float intensity = smoothstep(-0.2, 0.8, n);
   
   // Gradient Blending
   float mixFactor = 0.5 + 0.5 * sin(vUv.x * 3.14 + uTime * 0.5);
   vec3 color = mix(uColor1, uColor2, mixFactor);
   
   // Alpha composition
-  // Soft edges at top/bottom - Increased range for softer look
-  float edgeAlpha = smoothstep(0.0, 0.35, vUv.y) * (1.0 - smoothstep(0.65, 1.0, vUv.y));
-
+  // Sine wave fade for continuous soft edge (no flat plateau)
+  float edgeAlpha = sin(vUv.y * 3.14159);
+  
   // Soft edges at seam (left/right) to hide noise discontinuity
   float seamAlpha = smoothstep(0.0, 0.1, vUv.x) * (1.0 - smoothstep(0.9, 1.0, vUv.x));
   
-  // Curtain effect
-  float curtain = 0.5 + 0.5 * sin(vUv.x * 20.0 + n * 5.0);
+  // Curtain effect - slower and softer
+  float curtain = 0.5 + 0.5 * sin(vUv.x * 15.0 + n * 3.0);
   
   // Final alpha
-  float alpha = edgeAlpha * seamAlpha * (intensity * 0.5 + curtain * 0.2) * uOpacity;
+  float alpha = edgeAlpha * seamAlpha * (intensity * 0.6 + curtain * 0.3) * uOpacity;
   
   gl_FragColor = vec4(color, alpha);
 }
@@ -217,8 +218,8 @@ export const AuroraBands = () => {
     ].map(b => {
       const yTop = b.y + b.h / 2
       const yBottom = b.y - b.h / 2
-      const rTop = Math.max(0, (7 - yTop) / 12 * 4.5) + 0.5 // +0.5 offset to hover outside tree
-      const rBottom = Math.max(0, (7 - yBottom) / 12 * 4.5) + 0.8 // slightly wider at bottom for flare
+      const rTop = Math.max(0, (7 - yTop) / 12 * 4.5) + 1 // +1.2 offset to hover further outside tree
+      const rBottom = Math.max(0, (7 - yBottom) / 12 * 4.5) + 1.3 // slightly wider at bottom for flare
       return {
         ...b,
         radiusTop: rTop,

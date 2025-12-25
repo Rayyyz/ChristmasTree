@@ -4,7 +4,7 @@ import { InstancedMesh, Object3D, Color } from 'three'
 import { useStore } from '../../store/useStore'
 import { easing } from 'maath'
 
-const COUNT = 60
+const COUNT = 150
 
 export const Ornaments = () => {
   const meshRef = useRef<InstancedMesh>(null)

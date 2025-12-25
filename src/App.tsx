@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber'
 import { Experience } from './components/Scene/Experience'
 import { HandTracker } from './components/UI/HandTracker'
+import { Overlay } from './components/UI/Overlay'
 import { Suspense } from 'react'
 
 function Loader() {
@@ -14,8 +15,9 @@ function Loader() {
 
 function App() {
   return (
-    <div className="h-screen w-full bg-gray-950">
+    <div className="h-screen w-full bg-gray-950 relative overflow-hidden">
       <HandTracker />
+      <Overlay />
       <Canvas
         camera={{
           position: [0, 4, 20],

@@ -22,6 +22,9 @@ export const useHandLandmarker = () => {
           },
           runningMode: 'VIDEO',
           numHands: 1,
+          minHandDetectionConfidence: 0.8,
+          minHandPresenceConfidence: 0.8,
+          minTrackingConfidence: 0.8,
         })
         
         if (mounted) {

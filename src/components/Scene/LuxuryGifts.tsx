@@ -4,7 +4,7 @@ import { InstancedMesh, Object3D, Color } from 'three'
 import { useStore } from '../../store/useStore'
 import { easing } from 'maath'
 
-const COUNT = 100
+const COUNT = 80
 
 export const LuxuryGifts = () => {
   const boxRef = useRef<InstancedMesh>(null)
@@ -40,18 +40,18 @@ export const LuxuryGifts = () => {
       tree[i * 3 + 2] = Math.sin(angle) * radius
 
       // Colors logic
-      // 60% Gold Box + Red Ribbon
-      // 30% Red Box + Gold Ribbon
-      // 10% Silver Box + Red Ribbon
+      // 40% Gold Box + Red Ribbon
+      // 20% Red Box + Gold Ribbon
+      // 30% Silver Box + Red Ribbon
       const rand = Math.random()
       
       let boxHex, ribbonHex
       
-      if (rand > 0.4) {
+      if (rand > 0.6) {
          // Gold Box
          boxHex = '#FFD700'
          ribbonHex = '#8B0000' // Dark Red
-      } else if (rand > 0.1) {
+      } else if (rand > 0.4) {
          // Red Box
          boxHex = '#8B0000'
          ribbonHex = '#FFD700' // Gold

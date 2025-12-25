@@ -1,10 +1,10 @@
 import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Points, ShaderMaterial, Color } from 'three'
+import { Points, ShaderMaterial, Color, AdditiveBlending } from 'three'
 import { useStore } from '../../store/useStore'
 import { easing } from 'maath'
 
-const COUNT = 20000 
+const COUNT = 24000 
 
 const vertexShader = `
 uniform float uTime;
@@ -197,7 +197,8 @@ export const Particles = () => {
         uniforms={uniforms}
         transparent
         depthWrite={false}
-        // blending={AdditiveBlending} // Optional: Additive blending makes it more "magical" but loses depth
+        blending={AdditiveBlending}
+        toneMapped={false}
       />
     </points>
   )

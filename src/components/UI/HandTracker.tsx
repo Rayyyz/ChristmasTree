@@ -6,7 +6,7 @@ import { detectGesture } from '../../utils/gesture'
 export const HandTracker = () => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const landmarker = useHandLandmarker()
-  const { setHandDetected, setGesture } = useStore()
+  const { setHandDetected, setGesture, setHandPosition, setHandSize } = useStore()
   const requestRef = useRef<number>()
   const [error, setError] = useState<string | null>(null)
   const [cameraReady, setCameraReady] = useState(false)
@@ -56,9 +56,26 @@ export const HandTracker = () => {
             setHandDetected(true)
             const gesture = detectGesture(results.landmarks[0])
             setGesture(gesture)
+            
+            // Calculate Hand Center (Wrist) and map to -1..1
+            const wrist = results.landmarks[0][0]
+            const middleMCP = results.landmarks[0][9]
+            
+            // Calculate pseudo size based on distance between wrist and middle finger MCP
+            // This is roughly invariant to rotation, but sensitive to Z distance
+            const size = Math.hypot(wrist.x - middleMCP.x, wrist.y - middleMCP.y)
+            setHandSize(size)
+
+            setHandPosition({
+              x: (wrist.x - 0.5) * 2,
+              y: -(wrist.y - 0.5) * 2
+            })
           } else {
             setHandDetected(false)
             setGesture('IDLE')
+            // Optionally reset or keep position. Resetting feels safer.
+            setHandPosition({ x: 0, y: 0 })
+            setHandSize(0)
           }
       }
       requestRef.current = requestAnimationFrame(predictWebcam)
@@ -70,7 +87,7 @@ export const HandTracker = () => {
     return () => {
       if (requestRef.current) cancelAnimationFrame(requestRef.current)
     }
-  }, [landmarker, cameraReady, setGesture, setHandDetected])
+  }, [landmarker, cameraReady, setGesture, setHandDetected, setHandPosition])
 
   return (
     <div className="absolute top-4 left-4 z-50">

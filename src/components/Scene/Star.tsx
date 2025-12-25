@@ -1,11 +1,13 @@
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Shape, ExtrudeGeometry, Mesh } from 'three'
+import { Shape, ExtrudeGeometry, Mesh, MeshStandardMaterial, PointLight } from 'three'
 import { useStore } from '../../store/useStore'
 import { easing } from 'maath'
 
 export const Star = () => {
   const meshRef = useRef<Mesh>(null)
+  const materialRef = useRef<MeshStandardMaterial>(null)
+  const lightRef = useRef<PointLight>(null)
   const { mode } = useStore()
 
   const geometry = useMemo(() => {
@@ -55,20 +57,29 @@ export const Star = () => {
     
     const targetScale = mode === 'TREE' ? 1 : 0
     easing.damp3(meshRef.current.scale, [targetScale, targetScale, targetScale], 1.5, delta)
+    
+    // Pulse light
+    if (materialRef.current && lightRef.current) {
+      const t = state.clock.elapsedTime
+      const pulse = 1 + Math.sin(t * 2) * 0.2
+      materialRef.current.emissiveIntensity = 2.0 * pulse
+      lightRef.current.intensity = 2.0 * pulse
+    }
   })
 
   return (
     <mesh ref={meshRef} geometry={geometry} position={[0, 7.2, 0]}>
       <meshStandardMaterial
+        ref={materialRef}
         color="#ffffff"
         emissive="#FFD700"
-        emissiveIntensity={3.0}
+        emissiveIntensity={2.0}
         roughness={0.1}
         metalness={0.8}
         toneMapped={false}
       />
       {/* Add a point light to make it glow onto surroundings */}
-      <pointLight color="#FFD700" intensity={3} distance={15} decay={2} />
+      <pointLight ref={lightRef} color="#FFD700" intensity={2.0} distance={10} decay={2} />
     </mesh>
   )
 }

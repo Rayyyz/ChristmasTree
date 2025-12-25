@@ -42,9 +42,10 @@ interface BackgroundSparklesProps {
   count?: number
   color?: string
   radius?: number
+  minRadius?: number
 }
 
-export const BackgroundSparkles = ({ count = 2000, color = "#FFD700", radius = 60 }: BackgroundSparklesProps) => {
+export const BackgroundSparkles = ({ count = 2000, color = "#FFD700", radius = 60, minRadius = 40 }: BackgroundSparklesProps) => {
   const mesh = useRef<THREE.Points>(null)
   
   const { positions, sizes, speeds } = useMemo(() => {
@@ -53,11 +54,8 @@ export const BackgroundSparkles = ({ count = 2000, color = "#FFD700", radius = 6
     const speeds = new Float32Array(count)
     
     for(let i=0; i<count; i++) {
-        // Distance distribution: 
-        // Math.random() is [0, 1)
-        // power of 2 or 3 concentrates points near 0
-        // We use power 1.5 for a more natural "spread" that still has density at center
-        const r = Math.pow(Math.random(), 1.8) * radius
+        // Distribute points in a spherical shell between minRadius and radius
+        const r = minRadius + Math.random() * (radius - minRadius)
         
         // Spherical distribution
         const theta = 2 * Math.PI * Math.random()
@@ -75,7 +73,7 @@ export const BackgroundSparkles = ({ count = 2000, color = "#FFD700", radius = 6
     }
     
     return { positions: pos, sizes, speeds }
-  }, [count, radius])
+  }, [count, radius, minRadius])
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },

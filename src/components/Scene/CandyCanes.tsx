@@ -4,7 +4,7 @@ import { Group, CatmullRomCurve3, Vector3, CanvasTexture, RepeatWrapping } from 
 import { useStore } from '../../store/useStore'
 import { easing } from 'maath'
 
-const CANE_COUNT = 18
+const CANE_COUNT = 10
 
 // Generate Candy Cane Curve
 const curve = new CatmullRomCurve3([

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type GestureType = 'IDLE' | 'PINCH' | 'OPEN'
+export type GestureType = 'IDLE' | 'FIST' | 'OPEN'
 
 interface AppState {
   started: boolean
@@ -11,7 +11,10 @@ interface AppState {
   setHandDetected: (detected: boolean) => void
   gesture: GestureType
   setGesture: (gesture: GestureType) => void
-  
+  handPosition: { x: number, y: number }
+  setHandPosition: (pos: { x: number, y: number }) => void
+  handSize: number,
+  setHandSize: (size: number) => void,
   // Scene State
   mode: 'TREE' | 'CHAOS'
   setMode: (mode: 'TREE' | 'CHAOS') => void
@@ -25,6 +28,10 @@ export const useStore = create<AppState>((set) => ({
   setHandDetected: (detected) => set({ handDetected: detected }),
   gesture: 'IDLE',
   setGesture: (gesture) => set({ gesture }),
+  handPosition: { x: 0, y: 0 },
+  setHandPosition: (pos) => set({ handPosition: pos }),
+  handSize: 0,
+  setHandSize: (size) => set({ handSize: size }),
   
   mode: 'TREE',
   setMode: (mode) => set({ mode }),
